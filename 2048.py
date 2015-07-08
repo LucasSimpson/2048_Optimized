@@ -15,6 +15,7 @@ class Game (object):
 	def __init__ (self):
 		self.state = [0 for a in range (16)]
 		self.score = 0
+		self.stale_count = 0
 		self.spawnTile ()
 		self.spawnTile ()
 
@@ -34,7 +35,12 @@ class Game (object):
 				hasChanged = True
 
 		if hasChanged:
+			self.stale_count = 0
 			self.spawnTile ()
+		else:
+			self.stale_count += 1
+
+		return self.stale_count <= 4
 
 	def collapseRow (self, indices):
 		def look_ahead (i):
@@ -54,6 +60,7 @@ class Game (object):
 				i, val = look_ahead (a)
 				if self.state [indices [a]] == val:
 					new_row += [val * 2]
+					self.score += val * 2
 					self.state [indices [i]] = 0
 				else:
 					new_row += [self.state [indices [a]]]
@@ -84,9 +91,19 @@ class Game (object):
 
 
 
+
 g = Game ()
+
+mm = {
+	0: 'a',
+	1: 'w',
+	2: 's',
+	3: 'd',
+}
 
 while (True):
 	print g
-	move = raw_input ("wasd to slide up/left/down/right, and q to quit: ")
-	g.processMove (move)
+	#move = raw_input ("wasd to slide up/left/down/right, and q to quit: ")
+	move = mm [random.randint (0, 3)]
+	if not g.processMove (move):
+		break
