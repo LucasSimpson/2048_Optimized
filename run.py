@@ -5,7 +5,7 @@ from Game2048 import Game
 
 import random, math
 
-LAYERS = [5 * 16, 128, 2]
+LAYERS = [5 * 16, 1024, 2]
 
 def trans(x):
 	if x == 0: 
@@ -55,7 +55,7 @@ class Genotype2048 (BaseGenotype):
 
 
 class GeneticAlgorithm2048 (ThreadedBaseGeneticAlgorithm):
-	percent_pop_kept = 0.1
+	percent_pop_kept = 0.08
 
 	def create_genotype (self):
 		return Genotype2048 ()

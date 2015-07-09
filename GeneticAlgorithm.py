@@ -95,4 +95,8 @@ class ThreadedBaseGeneticAlgorithm (BaseGeneticAlgorithm):
 			results += [pool.apply_async (threadable_mate_genes, args=(gene1, gene2,))]
 
 		new_genotypes += [r.get () for r in results]
+
+		pool.close()
+		pool.join()
+    	
 		return new_genotypes
