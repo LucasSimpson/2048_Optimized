@@ -1,5 +1,5 @@
 from colorama import *
-import math, random
+import math, random, time
 
 class Game (object):
 	colorConstants = [Fore.BLACK, Fore.MAGENTA, Fore.RED, Fore.BLUE, Fore.CYAN, Fore.GREEN, Fore.YELLOW, Fore.WHITE]
@@ -16,10 +16,13 @@ class Game (object):
 		self.state = [0 for a in range (16)]
 		self.score = 0
 		self.stale_count = 0
-		self.spawnTile ()
-		self.spawnTile ()
+		self.spawn_tile ()
+		self.spawn_tile ()
 
-	def spawnTile (self):
+	def get_state (self):
+		return self.state
+
+	def spawn_tile (self):
 		validIndices = []
 		for index, value in enumerate (self.state):
 			if value == 0:
@@ -27,22 +30,28 @@ class Game (object):
 
 		self.state [validIndices [random.randint (0, len (validIndices) - 1)]] = 2
 
-	def processMove (self, move):
+	def process_move (self, move, visual=False):
 		hasChanged = False
 
 		for row in self.move_map [move]:
-			if self.collapseRow (row):
+			if self.collapse_row (row):
 				hasChanged = True
 
 		if hasChanged:
 			self.stale_count = 0
-			self.spawnTile ()
+			self.spawn_tile ()
 		else:
 			self.stale_count += 1
 
-		return self.stale_count <= 4
+		if visual:
+			print 'Move: ' + move
+			print self
+			time.sleep (0.5)
 
-	def collapseRow (self, indices):
+	def is_stale (self):
+		return self.stale_count > 5
+
+	def collapse_row (self, indices):
 		def look_ahead (i):
 			i += 1
 			while (i < 4):
@@ -88,22 +97,3 @@ class Game (object):
 			if (index + 1) % 4 == 0:
 				r += Style.NORMAL + Fore.WHITE + '\n'
 		return r
-
-
-
-
-g = Game ()
-
-mm = {
-	0: 'a',
-	1: 'w',
-	2: 's',
-	3: 'd',
-}
-
-while (True):
-	print g
-	#move = raw_input ("wasd to slide up/left/down/right, and q to quit: ")
-	move = mm [random.randint (0, 3)]
-	if not g.processMove (move):
-		break

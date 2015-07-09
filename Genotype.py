@@ -1,6 +1,6 @@
 import random
 
-class Genotype2048 (object):
+class BaseGenotype (object):
 	size = 200
 	mutation = 5000
 
@@ -12,10 +12,7 @@ class Genotype2048 (object):
 				raise Exception ("Gene sizes do not match.")
 			self.genes = genes
 
-		self.score = self.get_fitness_score ()
-
-	def random_gene (self):
-		return random.randint (0, 1000)		
+		self.score = int (self.get_fitness_score (self.genes))
 
 	def mate (self, other):
 		if self.size != other.size:
@@ -24,7 +21,6 @@ class Genotype2048 (object):
 		flop = random.randint (0, self.size)
 		new_gene = []
 		for a in range (len (self.genes)):
-
 			if random.randint (0, self.mutation) == 0:
 				new_gene += [self.random_gene ()]
 			elif a < flop:
@@ -35,10 +31,10 @@ class Genotype2048 (object):
 		return self.__class__ (new_gene)
 
 	def get_fitness_score (self):
-		score = 0
-		for gene in self.genes:
-			score += gene
-		return score
+		raise NotImplemented ()
+
+	def random_gene (self):
+		raise NotImplemented ()		
 
 	def __str__ (self):
 		return str (self.genes)
