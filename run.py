@@ -61,7 +61,7 @@ class GeneticAlgorithm2048 (ThreadedBaseGeneticAlgorithm):
 		return Genotype2048 ()
 
 
-ga = GeneticAlgorithm2048 (200)
+ga = GeneticAlgorithm2048 (1000)
 
 for a in range (100):
 	ga.epoch ()

@@ -19,14 +19,9 @@ class BaseGenotype (object):
 			raise Exception ("Gene sizes do not match.")
 
 		flop = random.randint (0, self.size)
-		new_gene = []
-		for a in range (len (self.genes)):
-			if random.randint (0, self.mutation) == 0:
-				new_gene += [self.random_gene ()]
-			elif a < flop:
-				new_gene += [self.genes [a]]
-			else:
-				new_gene += [other.genes [a]]
+		new_gene = self.genes [0:flop] + other.genes [flop:]
+		if random.randint (0, self.mutation) < self.size:
+			new_gene [random.randint (0, self.size - 1)] = self.random_gene ()
 
 		return self.__class__ (new_gene)
 
