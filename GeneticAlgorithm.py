@@ -30,6 +30,9 @@ class BaseGeneticAlgorithm (object):
 	def make_new_pop (self):
 		keep = int (self.population * self.percent_pop_kept)
 		new_genotypes = self.genotypes [0:keep]
+		
+		for gene in new_genotypes:
+			gene.eval_score ()
 
 		self.score_total = None
 		for a in range (self.population - keep):
@@ -80,7 +83,7 @@ def threadable_mate_genes (gene1, gene2):
 	return gene1.mate (gene2)
 
 class ThreadedBaseGeneticAlgorithm (BaseGeneticAlgorithm):
-	cores = multiprocessing.cpu_count ()
+	cores = multiprocessing.cpu_count () - 1
 
 	def make_new_pop (self):
 		pool = multiprocessing.Pool (processes=cores)

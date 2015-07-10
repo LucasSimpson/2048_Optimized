@@ -11,7 +11,9 @@ class BaseGenotype (object):
 			if len (genes) != self.size:
 				raise Exception ("Gene sizes do not match.")
 			self.genes = genes
+		self.eval_score ()
 
+	def eval_score (self):
 		self.score = int (self.get_fitness_score (self.genes))
 
 	def mate (self, other):

@@ -5,7 +5,7 @@ from Game2048 import Game
 
 import random, math
 
-LAYERS = [5 * 16, 1024, 2]
+LAYERS = [5 * 16, 512, 2]
 
 def trans(x):
 	if x == 0: 
@@ -39,6 +39,8 @@ def play_game (neuralNetwork, visual=False):
 
 	return game2048.score
 
+
+
 class Genotype2048 (BaseGenotype):
 	size = NeuralNetwork.gene_length_from_layers (LAYERS)
 	mutation = 5000 # 1 in *mutation*
@@ -61,13 +63,15 @@ class GeneticAlgorithm2048 (ThreadedBaseGeneticAlgorithm):
 		return Genotype2048 ()
 
 
-ga = GeneticAlgorithm2048 (1000)
+ga = GeneticAlgorithm2048 (300)
 
-for a in range (100):
+while (True):
 	ga.epoch ()
 
+"""
 genotype = ga.alpha ()
 nn = NeuralNetwork (LAYERS)
 nn.build_from_array (genotype)
 
 play_game (nn, visual=True)
+"""

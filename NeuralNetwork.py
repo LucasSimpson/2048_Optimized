@@ -15,10 +15,7 @@ class Layer (object):
 		self.activation_levels = array (values [self.inputs * self.neurons:]).reshape (1, self.neurons)
 
 	def eval (self, inputs):
-		tmp = inputs.dot (self.weights)
-		tmp = tmp - self.activation_levels
-		tmp = self.mask (tmp)
-		return tmp
+		return self.mask (inputs.dot (self.weights) - self.activation_levels)
 
 	def __str__ (self):
 		return str (self.weights) + '\n' + str (self.activation_levels)
