@@ -1,20 +1,34 @@
 import random, multiprocessing, numpy
 
-
 cores = multiprocessing.cpu_count ()
 
 
 class BaseGeneticAlgorithm (object):
 	percent_pop_kept = 0.05
 
-	def __init__ (self, population):
-		self.epoch_counter = 0
-		self.population = population
-		self.genotypes = []
-		for a in range (population):
-			genotype = self.create_genotype ()
-			self.genotypes += [genotype]
+	form_r = '{:>15}'
+	form_l = '{:<15}'
+
+	def __init__ (self, population, filename=None):
+		if filename:
+			pass # load from file
+		else:
+			self.epoch_counter = 0
+			self.population = population
+			self.genotypes = []
+			for a in range (population):
+				genotype = self.create_genotype ()
+				self.genotypes += [genotype]
+		
 		self.genotypes = self.sorted_pop ()
+		self.print_start_table ()
+
+	def save_to_file (self, filename):
+		# save to file
+		# - epoch counter
+		# - population
+		# - all genotypes
+		pass
 
 	def epoch (self, new_pop=None):
 		if new_pop:
@@ -24,12 +38,8 @@ class BaseGeneticAlgorithm (object):
 		self.genotypes = self.make_new_pop ()
 		self.genotypes = self.sorted_pop ()
 
-		scores = [gene.score for gene in self.genotypes]
-
-		best = str (max (scores))
-		mean = str (numpy.mean (numpy.array (scores)))
-		std = str (numpy.std (numpy.array (scores)))
-		print 'Fitness (' + str (self.epoch_counter) + '): ' + best + ', avg: ' + mean + ', std: ' + std
+		self.print_epoch_stats ()
+		
 		self.epoch_counter += 1
 
 	def make_new_pop (self):
@@ -76,6 +86,16 @@ class BaseGeneticAlgorithm (object):
 
 	def create_genotype (self):
 		raise NotImplemented ()
+
+	def print_epoch_stats (self):
+		scores = [gene.score for gene in self.genotypes]
+		best = str (max (scores))
+		mean = str (numpy.mean (numpy.array (scores)))
+		std = str (numpy.std (numpy.array (scores)))
+		print self.form_l.format (self.epoch_counter) + self.form_l.format (best) + self.form_l.format (mean) + self.form_l.format (std)
+
+	def print_start_table (self):
+		print self.form_l.format ('Generation') + self.form_l.format ('Fitness') + self.form_l.format ('Mean') + self.form_l.format ('Standard deviation')
 
 	def __str__ (self):
 		r = ''

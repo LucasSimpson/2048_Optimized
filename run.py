@@ -27,15 +27,17 @@ def play_game (neuralNetwork, visual=False):
 	moves = [['a', 's'], ['d', 'w']]
 
 	while (not game2048.is_stale ()):
-		state = game2048.get_state ()
 
-		inputs = []
-		for num in state:
-			val = 0 if num == 0 else math.log (num, 2)
-			inputs += trans (int (val))
-
-		outputs = neuralNetwork.eval (inputs)
-		game2048.process_move (moves [outputs [0]] [outputs [1]], visual)
+		if game2048.stale_count == 0:
+			state = game2048.get_state ()
+			inputs = []
+			for num in state:
+				val = 0 if num == 0 else math.log (num, 2)
+				inputs += trans (int (val))
+			outputs = neuralNetwork.eval (inputs)
+			game2048.process_move (moves [outputs [0]] [outputs [1]], visual)
+		else:
+			game2048.process_move (moves [random.randint (0, 1)] [random.randint (0, 1)], visual)
 
 	return game2048.score
 
@@ -56,22 +58,27 @@ class Genotype2048 (BaseGenotype):
 
 
 
-class GeneticAlgorithm2048 (ThreadedBaseGeneticAlgorithm):
+class GeneticAlgorithm2048Threaded (ThreadedBaseGeneticAlgorithm):
+	percent_pop_kept = 0.08
+
+	def create_genotype (self):
+		return Genotype2048 ()
+
+class GeneticAlgorithm2048 (BaseGeneticAlgorithm):
 	percent_pop_kept = 0.08
 
 	def create_genotype (self):
 		return Genotype2048 ()
 
 
-ga = GeneticAlgorithm2048 (100)
+ga = GeneticAlgorithm2048 (150)
 
-while (True):
+for a in range (200):
 	ga.epoch ()
 
-"""
 genotype = ga.alpha ()
 nn = NeuralNetwork (LAYERS)
 nn.build_from_array (genotype)
 
-play_game (nn, visual=True)
-"""
+while (raw_input ('play game? (y/n) ') == 'y'):
+	play_game (nn, visual=True)
