@@ -107,8 +107,32 @@ class BaseGeneticAlgorithm (object):
 def threadable_mate_genes (gene1, gene2):
 	return gene1.mate (gene2)
 
+def threadable_create_genotype (geneticAlgorithm):
+	return geneticAlgorithm.create_genotype ()
+
 class ThreadedBaseGeneticAlgorithm (BaseGeneticAlgorithm):
 	cores = multiprocessing.cpu_count () - 1
+
+	def __init__ (self, population, filename=None):
+		if filename:
+			pass # load from file
+		else:
+			pool = multiprocessing.Pool (processes=cores)
+
+			self.epoch_counter = 0
+			self.population = population
+			self.genotypes = []
+			results = []
+			for a in range (population):
+				results += [pool.apply_async (threadable_create_genotype, args=(self,))]
+			
+			self.genotypes += [r.get () for r in results]
+
+			pool.close ()
+			pool.join ()
+		
+		self.genotypes = self.sorted_pop ()
+		self.print_start_table ()
 
 	def make_new_pop (self):
 		pool = multiprocessing.Pool (processes=cores)
@@ -124,7 +148,7 @@ class ThreadedBaseGeneticAlgorithm (BaseGeneticAlgorithm):
 
 		new_genotypes += [r.get () for r in results]
 
-		pool.close()
-		pool.join()
+		pool.close ()
+		pool.join ()
     	
 		return new_genotypes
