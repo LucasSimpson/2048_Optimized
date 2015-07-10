@@ -5,7 +5,7 @@ from Game2048 import Game
 
 import random, math
 
-LAYERS = [5 * 16, 512, 2]
+LAYERS = [5 * 16, 128, 2]
 
 def trans(x):
 	if x == 0: 
@@ -63,7 +63,7 @@ class GeneticAlgorithm2048 (ThreadedBaseGeneticAlgorithm):
 		return Genotype2048 ()
 
 
-ga = GeneticAlgorithm2048 (300)
+ga = GeneticAlgorithm2048 (100)
 
 while (True):
 	ga.epoch ()

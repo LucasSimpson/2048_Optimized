@@ -1,4 +1,5 @@
-import random, multiprocessing
+import random, multiprocessing, numpy
+
 
 cores = multiprocessing.cpu_count ()
 
@@ -24,13 +25,17 @@ class BaseGeneticAlgorithm (object):
 		self.genotypes = self.sorted_pop ()
 
 		scores = [gene.score for gene in self.genotypes]
-		print 'Fitness (' + str (self.epoch_counter) + '): ' + str (max (scores)) + ', avg: ' + str (1.0 * sum(scores)/len(scores))
+
+		best = str (max (scores))
+		mean = str (numpy.mean (numpy.array (scores)))
+		std = str (numpy.std (numpy.array (scores)))
+		print 'Fitness (' + str (self.epoch_counter) + '): ' + best + ', avg: ' + mean + ', std: ' + std
 		self.epoch_counter += 1
 
 	def make_new_pop (self):
 		keep = int (self.population * self.percent_pop_kept)
 		new_genotypes = self.genotypes [0:keep]
-		
+
 		for gene in new_genotypes:
 			gene.eval_score ()
 
